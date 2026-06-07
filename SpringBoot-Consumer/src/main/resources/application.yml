@@ -7,4 +7,4 @@ spring:
     virtual-host: /
 logging:
   level:
-    com.atguigu.mq.listener.MyMessageListener: info
+    com.zhan.mq.listener.MyMessageListener: info

@@ -19,6 +19,8 @@ public class MyMessageListener {
     public static final String EXCHANGE_DIRECT = "exchange.direct.order";
     public static final String ROUTING_KEY = "order";
     public static final String QUEUE_NAME  = "queue.order";
+    public static final String QUEUE_NORMAL = "queue.normal.video";
+    public static final String QUEUE_DEAD_LETTER = "queue.dead.letter.video";
 
     // 修饰监听方法
     @RabbitListener(
@@ -86,5 +88,20 @@ public class MyMessageListener {
 
         // 3、给 RabbitMQ 服务器返回 ACK 确认信息
         channel.basicAck(deliveryTag, false);
+    }
+
+    @RabbitListener(queues = {QUEUE_NORMAL})
+    public void processMessageNormal(Message message, Channel channel) throws IOException {
+        // 监听正常队列，但是拒绝消息
+        log.info("★[normal]消息接收到，但我拒绝。");
+        channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+    }
+
+    @RabbitListener(queues = {QUEUE_DEAD_LETTER})
+    public void processMessageDead(String dataString, Message message, Channel channel) throws IOException {
+        // 监听死信队列
+        log.info("★[dead letter]dataString = " + dataString);
+        log.info("★[dead letter]我是死信监听方法，我接收到了死信消息");
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 }

@@ -73,4 +73,16 @@ public class RabbitMQTest {
                 ROUTING_KEY,
                 "Hello atguigu", messagePostProcessor);
     }
+
+    public static final String EXCHANGE_NORMAL = "exchange.normal.vodeo";
+    public static final String ROUTING_KEY_NORMAL = "routing.key.normal.video";
+    @Test
+    public void testSendMultiMessage() {
+        for (int i = 0; i < 20; i++) {
+            rabbitTemplate.convertAndSend(
+                    EXCHANGE_NORMAL,
+                    ROUTING_KEY_NORMAL,
+                    "测试死信情况2：消息数量超过队列的最大容量" + i);
+        }
+    }
 }
